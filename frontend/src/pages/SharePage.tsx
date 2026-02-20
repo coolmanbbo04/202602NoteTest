@@ -2,6 +2,13 @@
 import { Link, useParams } from "react-router-dom";
 import { api } from "../api";
 
+type Note = {
+  id: string;
+  title?: string | null;
+  content: string;
+};
+
+
 export default function SharePage() {
   const { shareId } = useParams();
   const [note, setNote] = useState<Note | null>(null);
