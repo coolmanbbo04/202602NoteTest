@@ -1,0 +1,32 @@
+﻿# ---- OS / editor ----
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ---- Python ----
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.venv/
+.venv*/
+.venv-backend/
+*.egg-info/
+.env
+.env.*
+*.log
+
+# ---- Node / Vite ----
+node_modules/
+dist/
+.vite/
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ---- Build / cache ----
+.cache/

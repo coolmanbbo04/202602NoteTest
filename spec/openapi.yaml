@@ -1,0 +1,195 @@
+﻿openapi: 3.0.3
+info:
+  title: Notepad Web App API
+  version: 1.0.0
+  description: |
+    Minimal API contract for notes CRUD + share.
+servers:
+  - url: /api
+paths:
+  /notes:
+    get:
+      summary: List notes
+      operationId: listNotes
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Note"
+    post:
+      summary: Create note
+      operationId: createNote
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateNoteRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Note"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+  /notes/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema: { type: integer, minimum: 1 }
+    get:
+      summary: Get note by id
+      operationId: getNote
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Note" }
+        "404":
+          $ref: "#/components/responses/NotFound"
+    patch:
+      summary: Update note (partial)
+      operationId: patchNote
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PatchNoteRequest" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Note" }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      summary: Delete note
+      operationId: deleteNote
+      responses:
+        "204":
+          description: No Content
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /notes/{id}/share:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema: { type: integer, minimum: 1 }
+    post:
+      summary: Create or refresh share link for note
+      operationId: shareNote
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ShareResponse" }
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /share/{shareId}:
+    parameters:
+      - in: path
+        name: shareId
+        required: true
+        schema: { type: string, minLength: 6 }
+    get:
+      summary: Get shared note (read-only)
+      operationId: getSharedNote
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Note" }
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+components:
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+
+  schemas:
+    Note:
+      type: object
+      required: [id, title, content, created_at, updated_at, share_id]
+      properties:
+        id:
+          type: integer
+          example: 123
+        title:
+          type: string
+          nullable: true
+          example: "会议纪要"
+        content:
+          type: string
+          example: "..."
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-02-19T12:34:56Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2026-02-19T12:35:10Z"
+        share_id:
+          type: string
+          nullable: true
+          example: "abCDeF12"
+
+    CreateNoteRequest:
+      type: object
+      required: [title, content]
+      properties:
+        title:
+          type: string
+          nullable: true
+        content:
+          type: string
+
+    PatchNoteRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          nullable: true
+        content:
+          type: string
+      additionalProperties: false
+
+    ShareResponse:
+      type: object
+      required: [share_id]
+      properties:
+        share_id:
+          type: string
+
+    Error:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
