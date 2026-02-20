@@ -34,3 +34,7 @@ yarn-error.log*
 # local db
 *.db
 
+
+# local / optional demo folder
+frontend/fastapi-render-demo/
+
