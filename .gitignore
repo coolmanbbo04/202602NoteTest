@@ -30,3 +30,7 @@ yarn-error.log*
 
 # ---- Build / cache ----
 .cache/
+
+# local db
+*.db
+
