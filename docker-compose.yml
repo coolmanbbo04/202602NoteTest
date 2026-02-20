@@ -1,0 +1,27 @@
+﻿services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: notepad-backend
+    restart: unless-stopped
+    volumes:
+      - notepad_data:/data
+    environment:
+      - NOTEPAD_DB_PATH=/data/notepad.db
+    expose:
+      - "8000"
+
+  web:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: notepad-web
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  notepad_data:
